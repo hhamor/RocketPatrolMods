@@ -10,7 +10,7 @@ class Spaceship extends Phaser.GameObjects.Sprite {
 
     update(){
         // random movement 
-        let shipNum = Math.between(0,5);
+        let shipNum = Math.Between(0,5);
 
         switch(shipNum){
             case 1:
