@@ -9,6 +9,11 @@ let keyF, keyLEFT, keyRIGHT;
 
 let game = new Phaser.Game(config);
 
+// define global variables
+game.global = {
+    highScore: 0,
+}
+
 // define game settings
 game.settings = {
     spaceshipSpeed: 3,
