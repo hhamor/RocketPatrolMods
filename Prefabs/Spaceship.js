@@ -8,32 +8,37 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         this.points = pointValue;
     }
 
-    update(){
+    create(){
         // random movement 
-        let shipNum = Math.Between(0,5);
+        let shipNum = Phaser.Math.Between(0,5);
+        var shipSpeed = 0;
 
         switch(shipNum){
             case 1:
-                this.x -= game.settings.spaceshipSpeed;
+                shipSpeed = game.settings.spaceshipSpeed;
                 console.log("Case 1");
                 break;
             case 2:
-                this.x += game.settings.spaceshipSpeed;
+                shipSpeed =  -game.settings.spaceshipSpeed;
                 console.log("Case 2");
                 break;
             case 3:
-                this.x -= (game.settings.spaceshipSpeed / 2);
+                shipSpeed = (game.settings.spaceshipSpeed / 2);
                 console.log("Case 3");
                 break;
             case 4:
-                this.x += (game.settings.spaceshipSpeed / 2);
+                shipSpeed = (game.settings.spaceshipSpeed / 4);
                 console.log("Case 4");
                 break;
             case 5:
-                this.x -= (game.settings.spaceshipSpeed * 2);
+                shipSpeed = (game.settings.spaceshipSpeed * 2);
                 console.log("Case 5");
                 break;
         }
+    }
+
+    update(){
+        this.x -= this.shipSpeed;
 
 
         // move spaceship left
