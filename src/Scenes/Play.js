@@ -15,9 +15,11 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('explosion', './Assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});*/
 
         // Modded Code
+        // Bow/Arrow/Target Atlas
+        this.load.atlas('archery', './Assets/AnimationAtlas/AnimationAtlas.png', './Assets/AnimationAtlas/AnimationAtlas.json');
+        this.load.image('bow', 'archery', 'AnimationAtlas-0');
+
         // Background Grass Tilemap
-        this.load.image('tiles', './Assets/TilesetTemplate.png');
-        this.load.tilemapTiledJSON('map', './Assets/GrassBG.json');
 
         // Top Level Frame
         this.load.image('woodFrame', './Assets/WoodFrame.png');
@@ -32,24 +34,23 @@ class Play extends Phaser.Scene {
             frameRate: 30
         });
 
+        // bow/arrow/target objects
+
 
         // rocket
-        this.p1Rocket = new Rocket(this, game.config.width/2 - 8, 431, 'rocket').setScale(0.5, 0.5).setOrigin(0, 0);
+        this.p1Rocket = new Rocket(this, game.config.width/2, 420, 'bow').setOrigin(0, 0);
 
         // add spaceships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + 192, 132, 'spaceship', 0, 30).setOrigin(0,0);
-        this.ship02 = new Spaceship(this, game.config.width + 96, 196, 'spaceship', 0, 20).setOrigin(0,0);
-        this.ship03 = new Spaceship(this, game.config.width, 260, 'spaceship', 0, 10).setOrigin(0,0);
+        this.ship01 = new Spaceship(this, game.config.width + 192, 132, 'target', 0, 30).setOrigin(0,0);
+        this.ship02 = new Spaceship(this, game.config.width + 96, 196, 'target', 0, 20).setOrigin(0,0);
+        this.ship03 = new Spaceship(this, game.config.width, 260, 'target', 0, 10).setOrigin(0,0); 
 
 
         // wood frame
         this.woodFrame = this.add.image(game.config.width/2, game.config.height/2, 'woodFrame');
 
         // grass brackground
-        this.grassTilemap = this.add.tilemap('map');
-        this.grassImage = this.grassTilemap.addTilesetImage('TilesetTemplate', 'tiles');
-        this.grassBG = this.grassTilemap.createStaticLayer('Tile Layer 1', 'tilemap', 0, 0);
-
+        
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
