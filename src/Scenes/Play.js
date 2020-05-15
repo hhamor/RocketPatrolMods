@@ -17,7 +17,9 @@ class Play extends Phaser.Scene {
         // Modded Code
         // Bow/Arrow/Target Atlas
         this.load.atlas('archery', './Assets/AnimationAtlas/AnimationAtlas.png', './Assets/AnimationAtlas/AnimationAtlas.json');
-        this.load.image('bow', 'archery', 'AnimationAtlas-0');
+        this.atlasTexture = this.textures.get('archery');
+        var frames = this.atlasTexture.getFrameNames();
+        this.add.image('bow', frames[15]);
 
         // Background Grass Tilemap
 
@@ -35,7 +37,6 @@ class Play extends Phaser.Scene {
         });
 
         // bow/arrow/target objects
-
 
         // rocket
         this.p1Rocket = new Rocket(this, game.config.width/2, 420, 'bow').setOrigin(0, 0);
