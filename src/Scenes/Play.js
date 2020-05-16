@@ -15,11 +15,13 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('explosion', './Assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});*/
 
         // Modded Code
+        // Bow/Arrow/Target Sprites
+        this.load.image('bow', './Assets/AnimationAtlas/AnimationAtlas-10.png');
+        this.load.image('arrow', './Assets/arrow.png');
+        this.load.image('target', './Assets/AnimationAtlas/AnimationAtlas-0.png');
+
         // Bow/Arrow/Target Atlas
         this.load.atlas('archery', './Assets/AnimationAtlas/AnimationAtlas.png', './Assets/AnimationAtlas/AnimationAtlas.json');
-        this.atlasTexture = this.textures.get('archery');
-        var frames = this.atlasTexture.getFrameNames();
-        this.add.image('bow', frames[15]);
 
         // Background Grass Tilemap
 
@@ -36,16 +38,16 @@ class Play extends Phaser.Scene {
             frameRate: 30
         });
 
-        // bow/arrow/target objects
+        // bow
+        this.p1Rocket = new Rocket(this, game.config.width/2, 420, 'bow', 0, false).setOrigin(0,0);
 
-        // rocket
-        this.p1Rocket = new Rocket(this, game.config.width/2, 420, 'bow').setOrigin(0, 0);
+        // arrow
+        this.arrow = new Arrow(this, 0, 0, 'arrow', 0).setOrigin(0,0);
 
-        // add spaceships (x3)
+        // add targets (x3)
         this.ship01 = new Spaceship(this, game.config.width + 192, 132, 'target', 0, 30).setOrigin(0,0);
         this.ship02 = new Spaceship(this, game.config.width + 96, 196, 'target', 0, 20).setOrigin(0,0);
         this.ship03 = new Spaceship(this, game.config.width, 260, 'target', 0, 10).setOrigin(0,0); 
-
 
         // wood frame
         this.woodFrame = this.add.image(game.config.width/2, game.config.height/2, 'woodFrame');
@@ -106,13 +108,18 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
         }
 
-        // starfield tilesprite
-        //this.starfield.tilePositionX -= 4;
+        // check if rocket is firing to launch arrow
+        if(this.p1Rocket.hasFired && this.arrow.ammo == 1){
+            this.arrow.fire(this.p1Rocket.x, this.p1Rocket.y);
+        }
 
         // check for game over condition
         if(!this.gameOver){
             // Calls on p1Rocket's update method from Rocket.js (p1Rocket is an object of Rocket)
             this.p1Rocket.update();
+
+            // update arrow
+            this.arrow.update();
 
             // update spaceships (x3)
             this.ship01.update(); 
@@ -151,7 +158,7 @@ class Play extends Phaser.Scene {
 
     shipExplode(ship) {
         ship.alpha = 0;                         // temporarily hide ship
-        // create explosion sprite at ship's position
+       // create explosion sprite at ship's position
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');             // play explode animation
         boom.on('animationcomplete', () => {    // callback after animation completes
