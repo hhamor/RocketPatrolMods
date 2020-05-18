@@ -24,7 +24,11 @@ class Play extends Phaser.Scene {
         this.load.atlas('archery', './Assets/AnimationAtlas/AnimationAtlas.png', './Assets/AnimationAtlas/AnimationAtlas.json');
 
         // Background Grass Tilemap
-        this.load.image('grassTiles', './Assets/AnimationAtlas/TilesetTemplate.png');
+        this.load.image('tiles', './Assets/TilesetTemplate.png', {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+        this.load.tilemapTiledJSON('map', './Assets/GrassMap.json');
 
         // Top Level Frame
         this.load.image('woodFrame', './Assets/WoodFrame.png');
@@ -38,6 +42,15 @@ class Play extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
             frameRate: 30
         });
+
+        // grass background
+        this.map = this.make.tilemap({ 
+            key: 'map',
+        });
+
+        this.tiles = this.map.addTilesetImage('TilesetTemplate', 'tiles');
+        
+        this.grassLayer = this.map.createStaticLayer('Tile Layer 1', this.tiles, 0, 0);
 
         // bow
         this.p1Rocket = new Rocket(this, game.config.width/2, 420, 'bow', 0, false).setOrigin(0,0);
