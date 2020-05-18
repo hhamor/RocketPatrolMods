@@ -24,6 +24,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('archery', './Assets/AnimationAtlas/AnimationAtlas.png', './Assets/AnimationAtlas/AnimationAtlas.json');
 
         // Background Grass Tilemap
+        this.load.image('grassTiles', './Assets/AnimationAtlas/TilesetTemplate.png');
 
         // Top Level Frame
         this.load.image('woodFrame', './Assets/WoodFrame.png');
@@ -51,8 +52,6 @@ class Play extends Phaser.Scene {
 
         // wood frame
         this.woodFrame = this.add.image(game.config.width/2, game.config.height/2, 'woodFrame');
-
-        // grass brackground
         
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
