@@ -1,4 +1,4 @@
-class Spaceship extends Phaser.GameObjects.Sprite {
+class Spaceship extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame, pointValue) {
         super(scene, x, y, texture, frame);
     
@@ -37,16 +37,17 @@ class Spaceship extends Phaser.GameObjects.Sprite {
     }
 
     update(){
+        this.setVelocityY(0);
         if(this.shipNum == 2){
             // move from left to right
-            this.x += this.shipSpeed;
+            this.setVelocityX(this.shipSpeed * 10);
             // wraparound from left edge to right edge
             if(this.x >= game.config.width + this.width){
                 this.x = 0;
             }
         } else {
             // move from right to left
-            this.x -= this.shipSpeed;
+            this.setVelocityX(-this.shipSpeed * 10);
             // wraparound from right edge to left edge
             if(this.x <= 0 - this.width){
                 this.x = game.config.width;

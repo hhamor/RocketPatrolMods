@@ -5,23 +5,14 @@ class Play extends Phaser.Scene {
     
     // Note: Preload comes before create!
     preload(){
-        // Old Code
-        /*// load images/tile sprites
-        this.load.image('rocket', './Assets/rocket.png');
-        this.load.image('spaceship', './Assets/spaceship.png');
-        this.load.image('starfield', './Assets/starfield.png');
-
-        // load explosion spritesheet
-        this.load.spritesheet('explosion', './Assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});*/
-
         // Modded Code
         // Bow/Arrow/Target Sprites
-        this.load.image('bow', './Assets/AnimationAtlas/AnimationAtlas-10.png');
+        this.load.image('bow', './Assets/bow.png');
         this.load.image('arrow', './Assets/arrow.png');
-        this.load.image('target', './Assets/AnimationAtlas/AnimationAtlas-0.png');
+        this.load.image('target', './Assets/TargetTile.png');
 
         // Bow/Arrow/Target Atlas
-        this.load.atlas('archery', './Assets/AnimationAtlas/AnimationAtlas.png', './Assets/AnimationAtlas/AnimationAtlas.json');
+        this.load.atlas('archery', './Assets/AnimationAtlas.png', './Assets/AnimationAtlas.json');
 
         // Background Grass Tilemap
         this.load.image('tiles', './Assets/TilesetTemplate.png', {
@@ -38,9 +29,15 @@ class Play extends Phaser.Scene {
     create() {
         // animation config
         this.anims.create({
-            key: 'explode',
-            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
-            frameRate: 30
+            key: 'targetHit',
+            frameRate: 30,
+            frames: this.anims.generateFrameNames('archery', {
+                prefix: 'target0',
+                suffix: '.png',
+                start: 0,
+                end: 5,
+                zeroPad: 1,
+            }),
         });
 
         // grass background
@@ -57,11 +54,20 @@ class Play extends Phaser.Scene {
 
         // arrow
         this.arrow = new Arrow(this, 0, 0, 'arrow', 0).setOrigin(0,0);
+        this.physics.world.enable(this.arrow);
 
         // add targets (x3)
         this.ship01 = new Spaceship(this, game.config.width + 192, 132, 'target', 0, 30).setOrigin(0,0);
         this.ship02 = new Spaceship(this, game.config.width + 96, 196, 'target', 0, 20).setOrigin(0,0);
         this.ship03 = new Spaceship(this, game.config.width, 260, 'target', 0, 10).setOrigin(0,0); 
+        this.physics.world.enable(this.ship01);
+        this.physics.world.enable(this.ship02);
+        this.physics.world.enable(this.ship03);
+        
+        // check collisions
+        this.physics.add.collider(this.arrow, this.ship03, this.checkCollision, null, this);
+        this.physics.add.collider(this.arrow, this.ship02, this.checkCollision, null, this);
+        this.physics.add.collider(this.arrow, this.ship01, this.checkCollision, null, this);
 
         // wood frame
         this.woodFrame = this.add.image(game.config.width/2, game.config.height/2, 'woodFrame');
@@ -77,9 +83,8 @@ class Play extends Phaser.Scene {
         // score display
         let scoreConfig = {
             fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            fontSize: '18px',
+            color: '#FFFFFF',
             align: 'right',
             padding: {
                 top: 5,
@@ -87,7 +92,8 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.scoreLeft = this.add.text(70, 54, this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(40, 47, 'Score:', scoreConfig);
+        this.scoreRight = this.add.text(120, 47, this.p1Score, scoreConfig);
 
         this.gameOver = false;
 
@@ -99,7 +105,8 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
         }, null, this);
 
-        this.clockText = this.add.text(470, 54, game.settings.gameTimer, scoreConfig);
+        this.clockTitle = this.add.text(410, 47, 'Timer: ', scoreConfig);
+        this.clockText = this.add.text(530, 47, game.settings.gameTimer, scoreConfig);
     }
 
     // Updates every frame
@@ -121,8 +128,11 @@ class Play extends Phaser.Scene {
         }
 
         // check if rocket is firing to launch arrow
-        if(this.p1Rocket.hasFired && this.arrow.ammo == 1){
+        if(this.p1Rocket.hasFired && !this.arrow.isFiring){
             this.arrow.fire(this.p1Rocket.x, this.p1Rocket.y);
+            console.log(this.arrow.isFiring);
+        } else if(!this.p1Rocket.hasFired){
+            this.arrow.isFiring = false;
         }
 
         // check for game over condition
@@ -138,52 +148,39 @@ class Play extends Phaser.Scene {
             this.ship02.update();
             this.ship03.update();
         }
-
-        // check collisions
-        if(this.checkCollision(this.p1Rocket, this.ship03)) {
-            this.p1Rocket.reset();
-            this.shipExplode(this.ship03);
-        }
-        if (this.checkCollision(this.p1Rocket, this.ship02)) {
-            this.p1Rocket.reset();            
-            this.shipExplode(this.ship02);
-
-        }
-        if (this.checkCollision(this.p1Rocket, this.ship01)) {
-            this.p1Rocket.reset();            
-            this.shipExplode(this.ship01);
-        }
     }
 
     // Checks for collisions
     checkCollision(rocket, ship) {
-        // simple AABB checking
-        if (rocket.x < ship.x + ship.width && 
-            rocket.x + rocket.width > ship.x && 
-            rocket.y < ship.y + ship.height &&
-            rocket.height + rocket.y > ship. y) {
-                return true;
+        console.log("Collision");
+        if(ship.body.touching.down){
+            console.log("Target hit!");
+            this.shipExplode(ship);
         } else {
-            return false;
+            console.log("Nothing happened...");
         }
     }
 
     shipExplode(ship) {
+        console.log("Destroying target!");
         ship.alpha = 0;                         // temporarily hide ship
-       // create explosion sprite at ship's position
-        let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
-        boom.anims.play('explode');             // play explode animation
-        boom.on('animationcomplete', () => {    // callback after animation completes
-            ship.reset();                       // reset ship position
-            ship.alpha = 1;                     // make ship visible again
-            boom.destroy();                     // remove explosion sprite
+        this.arrow.reset();
 
-        // score increment and repaint
-        this.p1Score += ship.points;
-        this.scoreLeft.text = this.p1Score;   
+        let targetOnHit = this.add.sprite(ship.x, ship.y, 'AnimationAtlas').setOrigin(0, 0);
+        targetOnHit.play('targetHit');
 
-        this.sound.play('sfx_explosion');   // play explosion audio
-        });       
+        targetOnHit.on('animationcomplete', () => {    // callback after animation completes
+            ship.reset();                              // reset ship position
+            ship.alpha = 1;                            // make ship visible again
+            targetOnHit.destroy();                            // remove explosion sprite
+
+            // score increment and repaint
+            this.p1Score += ship.points;
+            this.scoreRight.text = this.p1Score;   
+            console.log(this.p1Score);
+
+            this.sound.play('sfx_arrowHit');   // play explosion audio
+        });
     }
 }
 

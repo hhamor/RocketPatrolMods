@@ -1,4 +1,4 @@
-class Arrow extends Phaser.GameObjects.Sprite {
+class Arrow extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame){
         super(scene, x, y, texture, frame);
         this.isFiring = false;
@@ -15,7 +15,8 @@ class Arrow extends Phaser.GameObjects.Sprite {
         }
         
         if(this.isFiring){
-            this.y -= 2;
+            this.setVelocityY(-200);
+            this.setVelocityX(0);
         }
     }
 
@@ -30,9 +31,10 @@ class Arrow extends Phaser.GameObjects.Sprite {
     }
 
     reset(){
+        this.x = 0;
+        this.y = 0;
         this.setActive(false);
         this.setVisible(false);
-        this.isFiring = false;
         this.ammo = 1;
     }
 }
