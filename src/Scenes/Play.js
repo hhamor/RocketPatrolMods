@@ -7,8 +7,8 @@ class Play extends Phaser.Scene {
     preload(){
         // Modded Code
         // Bow/Arrow/Target Sprites
-        this.load.image('bow', './Assets/bow.png');
-        this.load.image('arrow', './Assets/arrow.png');
+        this.load.image('bow', './Assets/Bow.png');
+        this.load.image('arrow', './Assets/Arrow.png');
         this.load.image('target', './Assets/TargetTile.png');
 
         // Bow/Arrow/Target Atlas
