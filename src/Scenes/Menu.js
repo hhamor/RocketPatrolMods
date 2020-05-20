@@ -5,17 +5,21 @@ class Menu extends Phaser.Scene {
 
     preload() {
         // load audio
-        this.load.audio('sfx_select', './Assets/blip_select12.wav');
         this.load.audio('sfx_arrowHit', './Assets/161098__braqoon__arrow-damage.wav');
         this.load.audio('sfx_arrowFire', './Assets/178872__hanbaal__bow.wav');
+        this.load.audio('med_fanfare', './Assets/99961__cgeffex__medieval-fanfare-neonaeon-tweaked-by-cgeffex.wav')
+        this.load.image('sky', './Assets/Sky.png');
     }
     
     create() {
+      // sky
+      this.skyBG = this.add.tileSprite(0, 0, 640, 480, 'sky').setOrigin(0,0);
+      // menu config
         let menuConfig = {
-            fontFamily: 'Courier',
+            fontFamily: 'Times New Roman',
             fontSize: '20px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            backgroundColor: '#8B4513',
+            color: '#FFFFFF',
             align: 'right', 
             padding: {
                 top: 5,
@@ -29,36 +33,39 @@ class Menu extends Phaser.Scene {
         let centerY = game.config.height/2;
         let textSpacer = 64;
 
-        this.add.text(centerX, centerY - textSpacer,  'ROCKET PATROL', menuConfig).setOrigin(0.5);
+        this.add.text(centerX, centerY - textSpacer,  'ARCHERY PATROL', menuConfig).setOrigin(0.5);
         this.add.text(centerX, centerY,  'Use <- -> arrows to move and (F) to Fire', menuConfig).setOrigin(0.5);
-        menuConfig.backgroundColor = '#00FF00';
-        menuConfig.color = '#000';
+        menuConfig.backgroundColor = '#800000';
         this.add.text(centerX, centerY + textSpacer,  'Press <- for Easy and -> for Hard', menuConfig).setOrigin(0.5);
         this.add.text(centerX, centerY + 104, 'High Score: ' + game.global.highScore, menuConfig).setOrigin(0.5);
 
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+
+        this.sound.add('med_fanfare');
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+      //menu movement
+      this.skyBG.tilePositionX -= 4;
+
+      if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
           // easy mode
           game.settings = {
             spaceshipSpeed: 3,
             gameTimer: 60000    
           }
-          this.sound.play('sfx_select');
+          this.sound.play('med_fanfare');
           this.scene.start("playScene");    
-        }
-        if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+        } else if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
           // hard mode
           game.settings = {
             spaceshipSpeed: 4,
             gameTimer: 45000    
           }
-          this.sound.play('sfx_select');
+          this.sound.play('med_fanfare');
           this.scene.start("playScene");    
         }
-      }
+    }
 }

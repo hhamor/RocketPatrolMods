@@ -92,8 +92,8 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.scoreLeft = this.add.text(40, 47, 'Score:', scoreConfig);
-        this.scoreRight = this.add.text(120, 47, this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(55, 50, 'Score:', scoreConfig);
+        this.scoreRight = this.add.text(125, 50, this.p1Score, scoreConfig);
 
         this.gameOver = false;
 
@@ -105,8 +105,8 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
         }, null, this);
 
-        this.clockTitle = this.add.text(410, 47, 'Timer: ', scoreConfig);
-        this.clockText = this.add.text(530, 47, game.settings.gameTimer, scoreConfig);
+        this.clockTitle = this.add.text(410, 50, 'Timer: ', scoreConfig);
+        this.clockText = this.add.text(530, 50, game.settings.gameTimer, scoreConfig);
     }
 
     // Updates every frame

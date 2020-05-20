@@ -1,6 +1,7 @@
 /* Asset Citations:
-- bow.wav: https://freesound.org/people/Hanbaal/sounds/178872/
-- arrow_damage.wav: https://freesound.org/people/braqoon/sounds/161098/
+- sfx_arrowFire sound: https://freesound.org/people/Hanbaal/sounds/178872/
+- sfx_arrowHit sound: https://freesound.org/people/braqoon/sounds/161098/
+- med_fanfare sound: https://freesound.org/people/CGEffex/sounds/99961/
 */
 
 let config = {

@@ -40,14 +40,14 @@ class Spaceship extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityY(0);
         if(this.shipNum == 2){
             // move from left to right
-            this.setVelocityX(this.shipSpeed * 10);
+            this.setVelocityX(this.shipSpeed * 50);
             // wraparound from left edge to right edge
             if(this.x >= game.config.width + this.width){
                 this.x = 0;
             }
         } else {
             // move from right to left
-            this.setVelocityX(-this.shipSpeed * 10);
+            this.setVelocityX(-this.shipSpeed * 50);
             // wraparound from right edge to left edge
             if(this.x <= 0 - this.width){
                 this.x = game.config.width;
